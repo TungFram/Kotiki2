@@ -1,4 +1,4 @@
-package ru.itmo.kotiki2.service.owner;
+package ru.itmo.kotiki2.service.interfaces;
 
 import ru.itmo.kotiki2.model.ModelCat;
 import ru.itmo.kotiki2.model.ModelOwner;

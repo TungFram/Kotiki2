@@ -3,20 +3,22 @@ package ru.itmo.kotiki2.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import ru.itmo.kotiki2.service.cat.CatService;
-import ru.itmo.kotiki2.service.owner.OwnerService;
+import org.springframework.transaction.annotation.Transactional;
 
 import ru.itmo.kotiki2.enums.CatColor;
 import ru.itmo.kotiki2.enums.CatType;
 
 import ru.itmo.kotiki2.model.ModelCat;
 import ru.itmo.kotiki2.model.ModelOwner;
+import ru.itmo.kotiki2.view.CatView;
+import ru.itmo.kotiki2.view.OwnerView;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@Transactional
 public class MainService {
 
     private final OwnerService ownerService;
@@ -86,11 +88,11 @@ public class MainService {
         return catService.getFriendsOfCat(idOfCat);
     }
 
-    public void friend2Cats(int idOfFirstCat, int idOfSecondCat) throws Exception {
+    public void friendCats(int idOfFirstCat, int idOfSecondCat) throws Exception {
         catService.friendCats(idOfFirstCat, idOfSecondCat);
     }
 
-    public void unfriend2Cats(int idOfFirstCat, int idOfSecondCat) throws Exception {
+    public void unfriendCats(int idOfFirstCat, int idOfSecondCat) throws Exception {
         catService.unfriendCats(idOfFirstCat, idOfSecondCat);
     }
 
@@ -136,6 +138,13 @@ public class MainService {
     }
 
     
+    public boolean isCatExist(int id) {
+        return catService.isCatExist(id);
+    }
+
+    public boolean isCatExist(ModelCat cat) {
+        return catService.isCatExist(cat);
+    }
     
     public ModelCat findCatById(int id) {
         return catService.findCatById(id).orElse(null);
@@ -154,6 +163,15 @@ public class MainService {
         return res;
     }
 
+    
+    public boolean isOwnerExist(int id) {
+        return ownerService.isOwnerExist(id);
+    }
+
+    public boolean isOwnerExist(ModelOwner owner) {
+        return ownerService.isOwnerExist(owner);
+    }
+    
     public ModelOwner findOwnerById(int id) {
         return ownerService.findOwnerById(id);
     }
@@ -207,6 +225,27 @@ public class MainService {
         catService.deleteAll();
     }
     
+    public OwnerView convertOwner2View(ModelOwner owner) {
+        return ownerService.owner2View(owner);
+    }
+    
+    public CatView convertCat2View(ModelCat cat) { 
+        return catService.cat2View(cat);
+    }
+    
+    public List<OwnerView> convertOwnersToViews(List<ModelOwner> owners) {
+        List<OwnerView> res = new ArrayList<>();
+        for (ModelOwner owner : owners)
+            res.add(ownerService.owner2View(owner));
+        return res;
+    }
+
+    public List<CatView> convertCatsToViews(List<ModelCat> cats) {
+        List<CatView> res = new ArrayList<>();
+        for (ModelCat cat : cats)
+            res.add(catService.cat2View(cat));
+        return res;
+    }
 }
 
 

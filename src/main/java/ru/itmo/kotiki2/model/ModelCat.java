@@ -3,12 +3,12 @@ package ru.itmo.kotiki2.model;
 import java.time.LocalDate;
 import java.util.List;
 
-
 import ru.itmo.kotiki2.enums.CatColor;
 import ru.itmo.kotiki2.enums.CatType;
 import javax.persistence.*;
 import lombok.*;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
@@ -47,6 +47,7 @@ public class ModelCat {
     @Enumerated(EnumType.STRING)
     CatColor color;
 
+    @JsonIgnore
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     @ManyToOne(fetch = FetchType.EAGER)
@@ -55,6 +56,7 @@ public class ModelCat {
             inverseJoinColumns = @JoinColumn(name = "Id_of_owner", referencedColumnName = "OwnerID"))
     ModelOwner owner;
 
+    @JsonIgnore
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     @ManyToMany(fetch = FetchType.EAGER)

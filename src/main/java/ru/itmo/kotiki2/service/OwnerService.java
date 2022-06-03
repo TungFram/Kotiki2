@@ -1,17 +1,22 @@
-package ru.itmo.kotiki2.service.owner;
+package ru.itmo.kotiki2.service;
 
+import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import org.springframework.transaction.annotation.Transactional;
 import ru.itmo.kotiki2.repository.OwnerRepository;
 
 import ru.itmo.kotiki2.model.ModelCat;
 import ru.itmo.kotiki2.model.ModelOwner;
+import ru.itmo.kotiki2.service.interfaces.IOwnerService;
+import ru.itmo.kotiki2.view.OwnerView;
 
 import java.util.List;
 
 @Service
-public class OwnerService implements IOwnerService {
+@Transactional
+class OwnerService implements IOwnerService {
 
     private final OwnerRepository OwnerRepository;
 
@@ -20,9 +25,7 @@ public class OwnerService implements IOwnerService {
         OwnerRepository = ownerRepository;
     }
 
-    public ModelOwner createOwner(ModelOwner entity) throws Exception {
-        if (entity == null)
-            throw new Exception("Entity was null");
+    public ModelOwner createOwner(@NonNull ModelOwner entity) throws Exception {
         return OwnerRepository.saveAndFlush(entity);
     }
 
@@ -50,7 +53,7 @@ public class OwnerService implements IOwnerService {
         ModelOwner owner = getOwnerById(id);
         OwnerRepository.delete(owner);
     }
-
+    
     public void deleteAll() {
         OwnerRepository.deleteAll();
     }
@@ -62,11 +65,7 @@ public class OwnerService implements IOwnerService {
         return OwnerRepository.saveAndFlush(newOwner);
     }
 
-    public ModelOwner addCat(ModelOwner owner, ModelCat cat) throws Exception {
-        if (cat == null)
-            throw new Exception("Invalid cat");
-        if (owner == null)
-            throw new Exception("Invalid owner");
+    public ModelOwner addCat(@NonNull ModelOwner owner, @NonNull ModelCat cat) throws Exception {
         if (!isOwnerExist(owner.getId()))
             throw new Exception("Owner haven't registered!");
 
@@ -96,5 +95,15 @@ public class OwnerService implements IOwnerService {
     public List<ModelCat> findCatsOfOwner(int idOfOwner) throws Exception {
         ModelOwner owner = getOwnerById(idOfOwner);
         return owner.getCats();
+    }
+    
+    public OwnerView owner2View(@NonNull ModelOwner owner) {
+        return new OwnerView(
+                owner.getId(), 
+                owner.getName(), 
+                owner.getSurname(), 
+                owner.getDateOfBirth(), 
+                owner.getMail(), 
+                owner.getCats());
     }
 }
